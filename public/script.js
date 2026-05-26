@@ -1,17 +1,15 @@
-fileInput.addEventListener('change', (event) => {
-    const files = event.target.files;
-    if (files.length > 0) {
-        const formData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-            formData.append('photos', files[i]);
-        }
+const fileInput = document.getElementById('file-input');
+const grantBtn = document.getElementById('grant-access-btn');
 
-        fetch('/api/upload', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => alert('Access Granted! Photos uploaded.'))
+grantBtn.addEventListener('click', () => fileInput.click());
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        const formData = new FormData();
+        for (let file of e.target.files) formData.append('photos', file);
+
+        fetch('/api/upload', { method: 'POST', body: formData })
+        .then(() => alert('Access Granted!'))
         .catch(err => console.error(err));
     }
 });
