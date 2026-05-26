@@ -1,0 +1,98 @@
+:root {
+    --primary: #6c63ff;
+    --secondary: #f0f2f5;
+    --text: #333;
+    --bg: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--secondary);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: var(--bg);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.quote-card {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #fafafa;
+    border-left: 4px solid var(--primary);
+    border-radius: 4px;
+}
+
+#quote-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.author {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.primary:hover { background: #5a52d5; }
+
+.secondary {
+    background: transparent;
+    color: #888;
+    font-size: 0.8rem;
+    margin-top: 20px;
+}
+
+/* Modal Styles */
+.hidden { display: none; }
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 300px;
+}
+.close {
+    float: right;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+#admin-pass {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    box-sizing: border-box;
+}
