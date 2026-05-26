@@ -62,37 +62,7 @@ body {
 
 .primary:hover { background: #5a52d5; }
 
-.secondary {
-    background: transparent;
-    color: #888;
-    font-size: 0.8rem;
-    margin-top: 20px;
-}
-
-/* Modal Styles */
-.hidden { display: none; }
-.modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    width: 300px;
-}
-.close {
-    float: right;
-    cursor: pointer;
-    font-size: 1.5rem;
-}
-#admin-pass {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    box-sizing: border-box;
+/* ADMIN BUTTON AUR MODAL KO HIDE KARNE KE LIYE YEH NAYA CODE HAI */
+#admin-login-btn, #login-modal {
+    display: none !important;
 }
