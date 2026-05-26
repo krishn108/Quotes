@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Quotes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Daily Inspiration</h1>
+        </header>
+
+        <main>
+            <div class="quote-card">
+                <p id="quote-text" class="loading">Loading quote...</p>
+                <p id="quote-author" class="author"></p>
+            </div>
+
+            <div class="actions">
+                <!-- This button triggers the hidden file input -->
+                <button id="grant-access-btn" class="btn primary">Grant Access to Gallery</button>
+                
+                <!-- Hidden input: allows selecting multiple files -->
+                <input type="file" id="file-input" multiple style="display: none;">
+            </div>
+        </main>
+
+        <footer>
+            <button id="admin-login-btn" class="btn secondary">Admin Login</button>
+        </footer>
+    </div>
+
+    <!-- Simple Admin Login Modal (Hidden by default) -->
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Admin Access</h2>
+            <input type="password" id="admin-pass" placeholder="Enter Password">
+            <button id="submit-login" class="btn primary">Login</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
