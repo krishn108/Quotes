@@ -1,94 +1,47 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const multer = require('multer');
+const fs = require('fs');
 const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middleware to parse JSON bodies and serve static files
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// Upload folder setup
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
 
-// --- IN-MEMORY DATA STORE (For Learning Purposes) ---
-// In a real app, you would use a database like MongoDB or PostgreSQL.
-// This array will store the file metadata sent by users.
-let uploadedFiles = [];
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads/'),
+    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+});
+const upload = multer({ storage: storage });
 
-// Simple hardcoded password for the admin dashboard
-const ADMIN_PASSWORD = "secret123"; 
+app.use(express.json());
+app.use(express.static('public')); // Aapka HTML/CSS/JS 'public' folder mein hona chahiye
+app.use('/uploads', express.static('uploads')); // Photos dekhne ke liye
 
-// --- ROUTES ---
-
-// 1. API: Get Quote of the Day
+// API: Quote dene ke liye
 app.get('/api/quote', (req, res) => {
-    const quotes = [
-        { text: "Code is like humor. When you have to explain it, it’s bad.", author: "John Cage" },
-        { text: "First, solve the problem. Then, write the code.", author: "John Johnson" },
-        { text: "Experience is the name everyone gives to their mistakes.", author: "Oscar Wilde" }
-    ];
-    // Pick a random quote
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-    res.json(randomQuote);
+    res.json({ text: "Stay hungry, stay foolish.", author: "Steve Jobs" });
 });
 
-// 2. API: Receive File Metadata
-app.post('/api/upload-metadata', (req, res) => {
-    const fileData = req.body;
-    // Add timestamp
-    fileData.timestamp = new Date().toLocaleString();
-    
-    // Save to our in-memory array
-    uploadedFiles.push(fileData);
-    console.log("Received file data:", fileData);
-    
-    res.json({ success: true, message: "Metadata received!" });
+// API: Files upload karne ke liye
+app.post('/api/upload', upload.array('photos'), (req, res) => {
+    res.json({ message: "Files received successfully!" });
 });
 
-// 3. Admin Dashboard Route
+// Admin Panel: Saari files list karne ke liye
 app.get('/admin', (req, res) => {
-    // We will render a simple HTML page containing the data
-    const filesHtml = uploadedFiles.map(f => 
-        `<li>${f.name} (${f.size} bytes) - ${f.type} - Uploaded: ${f.timestamp}</li>`
-    ).join('');
-
-    // Simple HTML for the admin panel
-    const adminHtml = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Admin Dashboard</title>
-        <style>
-            body { font-family: sans-serif; padding: 2rem; background: #f4f4f9; }
-            .container { max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-            h1 { color: #333; }
-            ul { list-style: none; padding: 0; }
-            li { padding: 10px; border-bottom: 1px solid #eee; }
-            .logout { color: red; text-decoration: none; float: right; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Admin Dashboard <a href="/" class="logout">Back to Home</a></h1>
-            <h3>Files Access Permissions:</h3>
-            <ul>${filesHtml.length > 0 ? filesHtml : '<p>No files uploaded yet.</p>'}</ul>
-        </div>
-    </body>
-    </html>
-    `;
-    res.send(adminHtml);
+    fs.readdir(uploadDir, (err, files) => {
+        if (err) return res.status(500).send("Error reading files.");
+        
+        let fileLinks = files.map(file => 
+            `<li><a href="/uploads/${file}" target="_blank">${file}</a></li>`
+        ).join('');
+        
+        res.send(`<h1>Admin Dashboard</h1><p>Total Files: ${files.length}</p><ul>${fileLinks}</ul>`);
+    });
 });
 
-// 4. Admin Login Route (Simple Logic)
-app.post('/admin/login', (req, res) => {
-    const { password } = req.body;
-    if(password === ADMIN_PASSWORD) {
-        // In a real app, use a cookie or session. Here we just redirect to /admin.
-        res.json({ success: true, redirectUrl: '/admin' });
-    } else {
-        res.status(401).json({ success: false, message: "Incorrect Password" });
-    }
-});
-
-// Start Server
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
