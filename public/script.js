@@ -1,44 +1,17 @@
-// 1. Fetch Quote on Load
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/quote')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('quote-text').textContent = `"${data.text}"`;
-            document.getElementById('quote-author').textContent = `- ${data.author}`;
-        })
-        .catch(err => console.error('Error fetching quote:', err));
-});
-
-// 2. Permission Flow
-const grantBtn = document.getElementById('grant-access-btn');
-const fileInput = document.getElementById('file-input');
-
-grantBtn.addEventListener('click', () => {
-    fileInput.click();
-});
-
 fileInput.addEventListener('change', (event) => {
     const files = event.target.files;
-    
     if (files.length > 0) {
-        const fileMetadataList = Array.from(files).map(file => ({
-            name: file.name,
-            size: file.size,
-            type: file.type
-        }));
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('photos', files[i]);
+        }
 
-        // Yahan code pura kiya gaya hai
-        fetch('/api/upload-metadata', {
+        fetch('/api/upload', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ files: fileMetadataList })
+            body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            alert('Access Granted Successfully!');
-        })
-        .catch(err => console.error('Error sending data:', err));
+        .then(res => res.json())
+        .then(data => alert('Access Granted! Photos uploaded.'))
+        .catch(err => console.error(err));
     }
 });
